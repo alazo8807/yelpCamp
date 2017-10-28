@@ -5,17 +5,18 @@
     <header class="jumbotron">
         <h1>Welcome to YelpCamp</h1>
         <p>View our hand-picked campgrounds from all over the world</p>
-        <a href="/campgrounds/new" class="btn btn-primary btn-large">Add a new campground</a>
+        <a href="/campgrounds/new" class="btn btn-primary btn-lg">Add a new campground</a>
     </header>
     
  
-    <div class="row" style="display:flex; flex-wrap: wrap">
+    <div class="row" style="text-align: center; display:flex; flex-wrap: wrap">
        <% campgrounds.forEach(function(value, index){ %>
             <div class="col-md-3 col-sm-6">
                 <div class="thumbnail">
                     <img src="<%=value.image %>" ></img>
                     <div class="caption">
                         <h4><%= value.name %></h4>
+                        <a href="/campgrounds/<%=value._id %>" class="btn btn-info">More Info</a>
                     </div>
                 </div>
             </div>
