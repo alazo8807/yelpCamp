@@ -27,7 +27,8 @@ function seedDB(){
             console.log(err);  
         }else{
             console.log("Campgrounds removed"); 
-            //add some campgrounds
+            
+            //Remove all comments
             Comment.remove({},function(err, removedComments){
                 if(err){
                     console.log(err);
@@ -36,12 +37,15 @@ function seedDB(){
                     
                     console.log("Comments Removed");
                     
+                    //add some campgrounds
                     newCamps.forEach(function(val){
                        Campground.create(val, function(err,newCamp){
                           if(err){
                             console.log(err);
                           } else{
                             console.log("camp added");
+                            
+                            //Create comment
                             Comment.create(
                                 {
                                     text:"Greate place but i wish there was internet",
@@ -51,6 +55,7 @@ function seedDB(){
                                     if(err){
                                         console.log(err);
                                     }else{
+                                        //insert the commment in each campground
                                         newCamp.comments.push(createdComment);
                                         newCamp.save();
                                         console.log("comment added");
