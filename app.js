@@ -32,6 +32,11 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(function(req,res,next){
+   res.locals.userLogged = req.user;
+   next();
+});
+
 //===============
 //ROUTES
 //===============
@@ -67,7 +72,7 @@ app.get("/register", function(req, res) {
 app.post("/register", function(req, res) {
    var newUser = new User({username: req.body.username});
    var password = req.body.password;
-   passport.register(newUser, password, function(err, user){
+   User.register(newUser, password, function(err, user){
         if(err){
             console.log(err);
             return res.render("/register");
@@ -83,9 +88,26 @@ app.get("/login", function(req, res) {
     res.render("login");
 });
 
-app.post("/login", function(req, res) {
-    passport.authenticate("local")()   
-})
+app.post("/login", passport.authenticate("local", {
+        successRedirect: "/campgrounds",
+        failureRedirect: "/login"
+    }), 
+function(req, res) {
+});
+
+//logout route
+app.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/login");
+});
+
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()){
+        console.log("is logged in");
+        return next();
+    }
+    res.redirect("/login");
+}
 
 //=================
 //CAMPGROUND ROUTES
@@ -137,7 +159,7 @@ app.get("/campgrounds/:id", function(req,res){
 //---------------
 
 //NEW Route
-app.get("/campgrounds/:id/comments/new", function(req, res) {
+app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res) {
     Campground.findById(req.params.id, function(err, foundCampground){
        if(err){
            console.log(err);
@@ -150,7 +172,7 @@ app.get("/campgrounds/:id/comments/new", function(req, res) {
 });
 
 //CREATE Route
-app.post("/campgrounds/:id/comments", function(req, res){
+app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
     var newComment = req.body.comment;
     if(newComment){
         console.log(newComment);
