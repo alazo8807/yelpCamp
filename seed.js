@@ -26,47 +26,47 @@ function seedDB(){
         if(err){
             console.log(err);  
         }else{
-            console.log("Campgrounds removed"); 
+        //     console.log("Campgrounds removed"); 
             
-            //Remove all comments
-            Comment.remove({},function(err, removedComments){
-                if(err){
-                    console.log(err);
+        //     //Remove all comments
+        //     Comment.remove({},function(err, removedComments){
+        //         if(err){
+        //             console.log(err);
                     
-                }else{
+        //         }else{
                     
-                    console.log("Comments Removed");
+        //             console.log("Comments Removed");
                     
-                    //add some campgrounds
-                    newCamps.forEach(function(val){
-                       Campground.create(val, function(err,newCamp){
-                          if(err){
-                            console.log(err);
-                          } else{
-                            console.log("camp added");
+        //             //add some campgrounds
+        //             newCamps.forEach(function(val){
+        //               Campground.create(val, function(err,newCamp){
+        //                   if(err){
+        //                     console.log(err);
+        //                   } else{
+        //                     console.log("camp added");
                             
-                            //Create comment
-                            Comment.create(
-                                {
-                                    text:"Greate place but i wish there was internet",
-                                    author: "Pepito Perez"
+        //                     //Create comment
+        //                     Comment.create(
+        //                         {
+        //                             text:"Greate place but i wish there was internet",
+        //                             author: "Pepito Perez"
                                     
-                                }, function(err, createdComment){
-                                    if(err){
-                                        console.log(err);
-                                    }else{
-                                        //insert the commment in each campground
-                                        newCamp.comments.push(createdComment);
-                                        newCamp.save();
-                                        console.log("comment added");
-                                    }
-                                })
-                          }
-                       }); 
-                    });   
+        //                         }, function(err, createdComment){
+        //                             if(err){
+        //                                 console.log(err);
+        //                             }else{
+        //                                 //insert the commment in each campground
+        //                                 newCamp.comments.push(createdComment);
+        //                                 newCamp.save();
+        //                                 console.log("comment added");
+        //                             }
+        //                         })
+        //                   }
+        //               }); 
+        //             });   
                     
-                }
-            })
+        //         }
+        //     })
             
         }
     });

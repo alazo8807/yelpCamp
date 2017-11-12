@@ -16,7 +16,18 @@
                 <div class="caption">
                     <h4 class="pull-right">$9.00/night</h4>
                     <h4><a><%=campground.name %></a></h4>
-                    <p><%=campground.description%></p>
+                    <p><%= campground.description %></p>
+                    <p>
+                        <em>Submited by <%= campground.author.username%></em>
+                    </p>
+                    
+                    <% if(userLogged && campground.author.id.equals(userLogged._id)){ %>
+                        <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                        <form id="deleteForm" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-xs btn-danger">Delete</button>
+                        </form>
+                    <% } %>
+                
                 </div>
             </div>
             
@@ -28,7 +39,7 @@
                 <% campground.comments.forEach(function(value){ %>
                     <div class="row">
                         <div class="col-md-12">
-                            <strong><%= value.author %></strong> 
+                            <strong><%= value.author.username %></strong> 
                             <span class="pull-right">10 Days Ago</span>
                             <p>
                              <%= value.text %> 
