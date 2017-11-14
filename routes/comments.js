@@ -1,8 +1,11 @@
 var express = require("express");
 var router = express.Router();
+var methodOverride = require("method-override");
 
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
+
+router.use(methodOverride("_method"));
 
 //---------------
 //COMMENTS ROUTES
@@ -54,6 +57,65 @@ router.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
         });
     }
 });
+
+//EDIT Route
+router.get("/campgrounds/:campground_id/comments/:commment_id/edit", checkCommentOwnership, function(req,res){
+    Comment.findById(req.params.commment_id, function(err, foundComment) {
+        if(err){
+            console.log(err);
+            res.redirect("back");
+        }else{
+            res.render("comments/edit", {campground_id: req.params.campground_id, comment: foundComment});     
+        }
+    });
+});
+
+//UPDATE Route
+router.put("/campgrounds/:campground_id/comments/:comment_id", checkCommentOwnership, function(req, res){
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
+       if (err) {
+           console.log(err);
+           res.redirect("back");
+       } else{
+           res.redirect("/campgrounds/" + req.params.campground_id);
+       }
+    });
+});
+
+router.delete("/campgrounds/:campground_id/comments/:comment_id", checkCommentOwnership, function(req, res){
+   Comment.findByIdAndRemove(req.params.comment_id, function(err){
+       if(err){
+           console.log("there was an error");
+           console.log(err);
+           res.redirect("back");
+       }else{
+           console.log("comment deleted");
+           res.redirect("/campgrounds/" + req.params.campground_id);
+       }
+   });
+});
+
+function checkCommentOwnership(req,res,next){
+    if (req.isAuthenticated()) {
+        //get the comment's author
+        Comment.findById(req.params.comment_id, function(err, foundComment){
+           if (err) {
+               console.log(err);
+               res.redirect("back");
+           } else{
+               if(foundComment.author.id.equals(req.user._id)){
+                   next();
+               } else{
+                   res.redirect("back");
+               }
+           }
+        });
+        //check if comment's author is the user logged in
+        
+    }else{
+        res.redirect("back");
+    }
+}
 
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){

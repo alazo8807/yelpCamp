@@ -36,6 +36,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+//Pass the logged in user to every page
 app.use(function(req,res,next){
    res.locals.userLogged = req.user;
    next();
